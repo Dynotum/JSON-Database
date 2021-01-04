@@ -9,7 +9,8 @@
 # Compiled class file
 *.class
 *out/
-**build/
+*build/
+*build/tmp/*
 *test/
 #yaml
 *.yaml
