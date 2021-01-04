@@ -1,7 +1,7 @@
 # JSON-Database
-##Stage 1/6: 100-cell database
+## Stage 1/6: 100-cell database
 
-##Description
+## Description
 
 JSON database is a single file database that stores information in the form of JSON. It is a remote database, so it's usually accessed through the Internet.
 
@@ -18,7 +18,7 @@ After delete, the user should specify the number of the cell. If the index is wr
 To exit the program, the user should enter exit.
 
 Your program should run from the main method of the server/Main class.
-#Output example
+# Output example
 
 The greater-than symbol followed by a space > represents the user input.
 ```
