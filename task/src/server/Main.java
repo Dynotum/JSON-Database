@@ -32,11 +32,13 @@ class ConnectionServer {
         try (ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName(address))) {
             Socket socket = server.accept();
             DataInputStream input = new DataInputStream(socket.getInputStream());
-//            final String value = input.readUTF();
-            System.out.println("Received: Give me a record # 12" /*+ value*/);
+            final String valueInput = input.readUTF();
+            System.out.println("Received: " + valueInput);
 
             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-            final String valueOut = "Sent: A record # 12 was sent!";
+            final String[] value = valueInput.split("#");
+            final String valueOut = "A record # " + value[1].trim() + " was sent!";
+            System.out.println("Sent: " + valueOut);
             output.writeUTF(valueOut);
 
         } catch (IOException e) {
