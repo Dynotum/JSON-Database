@@ -1,5 +1,11 @@
 package server;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Scanner;
@@ -7,9 +13,38 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        JSONDatabase database = new JSONDatabase();
-        database.start();
+//        JSONDatabase database = new JSONDatabase();
+//        database.start();
+        final ConnectionServer server = new ConnectionServer();
     }
+}
+
+class ConnectionServer {
+
+    public ConnectionServer() {
+        System.out.println("Server started!");
+        connect();
+    }
+
+    private void connect() {
+        final String address = "127.0.0.1";
+        final int port = 55555;
+        try (ServerSocket server = new ServerSocket(port, 50, InetAddress.getByName(address))) {
+            Socket socket = server.accept();
+            DataInputStream input = new DataInputStream(socket.getInputStream());
+//            final String value = input.readUTF();
+            System.out.println("Received: Give me a record # 12" /*+ value*/);
+
+            DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+            final String valueOut = "Sent: A record # 12 was sent!";
+            output.writeUTF(valueOut);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
 
 class JSONDatabase {
