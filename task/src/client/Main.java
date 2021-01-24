@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 public class Main {
 
     public static void main(String[] args) {
-        ClientConnection clientConnection = new ClientConnection();
+//        ClientConnection clientConnection = new ClientConnection();
     }
 }
 

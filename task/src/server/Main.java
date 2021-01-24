@@ -6,16 +6,29 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Scanner;
+import java.util.*;
+
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 
 public class Main {
+    @Parameter(names = {"--type", "-t"})
+    private String type;
+    @Parameter(names = {"--index", "-i"})
+    private int index;
+    @Parameter(names = {"--message", "-m"}, variableArity = true) // If the number of following parameters is unknown
+    private List<String> message = new ArrayList<>();
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
+        Main main = new Main();
+        JCommander.newBuilder()
+                .addObject(main)
+                .build().parse(args);
+        System.out.println("t -> " + main.type + " i -> " + main.index + " m -> " + main.message);
+
 //        JSONDatabase database = new JSONDatabase();
 //        database.start();
-        final ConnectionServer server = new ConnectionServer();
+//        final ConnectionServer server = new ConnectionServer();
     }
 }
 
@@ -54,11 +67,11 @@ class JSONDatabase {
     final static String OK = "OK";
     final Scanner scanner = new Scanner(System.in);
     final HashMap<Integer, String> cell = new LinkedHashMap<>();
-
+    private final int MAX_CELLS = 1000;
 
     public void start() {
         // warn-up
-        for (int index = 1; index <= 100; index++) {
+        for (int index = 1; index <= MAX_CELLS; index++) {
             cell.put(index, " ");
         }
 
