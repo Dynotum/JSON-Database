@@ -27,14 +27,21 @@ public class Main {
         JCommander.newBuilder()
                 .addObject(main)
                 .build().parse(args);
-        System.out.println("t -> " + main.type + " i -> " + main.index + " m -> " + main.message);
-//        ClientConnection clientConnection = new ClientConnection();
+        final ClientConnection clientConnection = new ClientConnection(main.type, main.index, main.message);
     }
 }
 
 class ClientConnection {
 
-    public ClientConnection() {
+    private final List<String> message;
+    private final String type;
+    private final int index;
+
+    public ClientConnection(String type, int index, List<String> message) {
+        this.message = message;
+        this.type = type;
+        this.index = index;
+
         System.out.println("Client started!");
         clientConnect();
     }
@@ -44,15 +51,13 @@ class ClientConnection {
         final int port = 55555;
         try (Socket socket = new Socket(InetAddress.getByName(address), port)) {
             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-            final String valueOut = "Give me a record # 12";
-            System.out.println("Sent: " + valueOut);
-            output.writeUTF(valueOut);
+//            final String valueOut = "Give me a record # 12";
+            System.out.println("Sent: " + type + " " + index);
+            output.writeUTF(type + " " + index);
 
             DataInputStream input = new DataInputStream(socket.getInputStream());
             System.out.println("Received: " + input.readUTF());
 
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

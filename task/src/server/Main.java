@@ -12,14 +12,16 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        JSONDatabase database = new JSONDatabase();
+        final ConnectionServer server = new ConnectionServer();
+        //        JSONDatabase database = new JSONDatabase();
 //        database.start();
-//        final ConnectionServer server = new ConnectionServer();
     }
 }
 
 class ConnectionServer {
-
+    /**
+     * the server should serve one client at a time in a loop, and the client should only send one request to the server, get one reply, and exit. After that, the server should wait for another connection.
+     */
     public ConnectionServer() {
         System.out.println("Server started!");
         connect();
@@ -32,13 +34,17 @@ class ConnectionServer {
             Socket socket = server.accept();
             DataInputStream input = new DataInputStream(socket.getInputStream());
             final String valueInput = input.readUTF();
-            System.out.println("Received: " + valueInput);
+
+            JSONDatabase jsonDatabase = new JSONDatabase(valueInput);
+
+            final String result = jsonDatabase.getResponse();
+//            System.out.println("Received: " + result);
 
             DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-            final String[] value = valueInput.split("#");
-            final String valueOut = "A record # " + value[1].trim() + " was sent!";
-            System.out.println("Sent: " + valueOut);
-            output.writeUTF(valueOut);
+//            final String[] value = valueInput.split("#");
+//            final String valueOut = "A record # " + value[1].trim() + " was sent!";
+//            result =("Sent: " + valueOut);
+            output.writeUTF(result);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,6 +60,13 @@ class JSONDatabase {
     final Scanner scanner = new Scanner(System.in);
     final HashMap<Integer, String> cell = new LinkedHashMap<>();
     private final int MAX_CELLS = 1000;
+    private final String valueClient;
+    private String result = "";
+
+    public JSONDatabase(String valueClient) {
+        this.valueClient = valueClient;
+        start();
+    }
 
     public void start() {
         // warn-up
@@ -61,43 +74,42 @@ class JSONDatabase {
             cell.put(index, " ");
         }
 
-        String input = scanner.nextLine();
-        while (!input.equalsIgnoreCase("exit")) {
+//        while (!input.equalsIgnoreCase("exit")) {
 
-            final String[] stringSplit = input.split(" ");
-            final int index = Integer.parseInt(stringSplit[1]);
-            if (!isWithinRange(index)) {
-                System.out.println(ERROR);
-                input = scanner.nextLine();
-                continue;
-            }
-            switch (stringSplit[0]) {
-                case "get":
-                    getKey(index, stringSplit);
-                    break;
-                case "set":
-                    setKey(index, stringSplit);
-                    break;
-                case "delete":
-                    deleteByIndex(index, stringSplit);
-                    break;
-                default:
-                    System.out.println(ERROR);
-            }
-
-            input = scanner.nextLine();
+        final String[] stringSplit = valueClient.split(" ");
+        final int index = Integer.parseInt(stringSplit[1]);
+        if (!isWithinRange(index)) {
+            result = (ERROR);
+//                input = scanner.nextLine();
+//                continue;
         }
+        switch (stringSplit[0]) {
+            case "get":
+                getKey(index, stringSplit);
+                break;
+            case "set":
+                setKey(index, stringSplit);
+                break;
+            case "delete":
+                deleteByIndex(index, stringSplit);
+                break;
+            default:
+                result = (ERROR);
+        }
+
+//            input = scanner.nextLine();
+//        }
 
     }
 
     private void deleteByIndex(int index, String[] stringSplit) {
         if (stringSplit.length > 2) {
-            System.out.println(ERROR);
+            result = (ERROR);
             return;
         }
 
         cell.remove(index);
-        System.out.println(OK);
+        result = (OK);
 
     }
 
@@ -112,26 +124,30 @@ class JSONDatabase {
         }
 
         cell.put(index, sb.toString());
-        System.out.println(OK);
+        result = (OK);
     }
 
 
     private void getKey(int index, String[] inputArray) {
         if (inputArray.length > 2) {
-            System.out.println(ERROR);
+            result = (ERROR);
             return;
         }
 
         if (!cell.containsKey(index)) {
-            System.out.println(ERROR);
+            result = (ERROR);
         } else if (cell.get(index).equals(" ")) {
-            System.out.println(ERROR);
+            result = (ERROR);
         } else {
-            System.out.println(cell.get(index));
+            result = (cell.get(index));
         }
     }
 
     private boolean isWithinRange(int parseInt) {
-        return 1 <= parseInt && parseInt <= 100;
+        return 1 <= parseInt && parseInt <= MAX_CELLS;
+    }
+
+    public String getResponse() {
+        return result;
     }
 }
