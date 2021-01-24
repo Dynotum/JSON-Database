@@ -8,23 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-
 public class Main {
-    @Parameter(names = {"--type", "-t"})
-    private String type;
-    @Parameter(names = {"--index", "-i"})
-    private int index;
-    @Parameter(names = {"--message", "-m"}, variableArity = true) // If the number of following parameters is unknown
-    private List<String> message = new ArrayList<>();
 
-    public static void main(String... args) {
-        Main main = new Main();
-        JCommander.newBuilder()
-                .addObject(main)
-                .build().parse(args);
-        System.out.println("t -> " + main.type + " i -> " + main.index + " m -> " + main.message);
+    public static void main(String[] args) {
 
 //        JSONDatabase database = new JSONDatabase();
 //        database.start();
