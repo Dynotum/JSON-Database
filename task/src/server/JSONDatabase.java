@@ -25,9 +25,19 @@ class JSONDatabase {
 
     public void doOperation(String valueClient) {
         final String[] stringSplit = valueClient.split(" ");
+
+        if (stringSplit[0].equalsIgnoreCase("exit")) {
+//            System.out.println("entro aqui?");
+            result = OK;
+            isExit = true;
+            return;
+        }
+
         final int index = Integer.parseInt(stringSplit[1]);
+
         if (!isWithinRange(index)) {
             result = (ERROR);
+            return;
         }
 
         switch (stringSplit[0]) {
@@ -40,9 +50,6 @@ class JSONDatabase {
             case "delete":
                 deleteByIndex(index, stringSplit);
                 break;
-            case "exit":
-                result = OK;
-                isExit = true;
             default:
                 result = (ERROR);
         }
@@ -50,6 +57,10 @@ class JSONDatabase {
 
     private void deleteByIndex(int index, String[] stringSplit) {
         if (stringSplit.length > 2) {
+            result = (ERROR);
+            return;
+        }
+        if (!isWithinRange(index)) {
             result = (ERROR);
             return;
         }

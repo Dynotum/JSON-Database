@@ -12,7 +12,8 @@ class ClientConnection {
     private final List<String> message;
     private final String type;
     private final int index;
-    private static int test = 1;
+    private final String address = "127.0.0.1";
+    private final int port = 55555;
 
     public ClientConnection(String type, int index, List<String> message) {
         this.message = message;
@@ -25,16 +26,16 @@ class ClientConnection {
     }
 
     private void clientConnect() {
-        final String address = "127.0.0.1";
-        final int port = 55555;
-        try (Socket socket = new Socket(InetAddress.getByName(address), port)) {
-            final DataOutputStream output = new DataOutputStream(socket.getOutputStream());
-            final String responseServer = String.join(" ", type, String.valueOf(index), String.join(" ", message)).trim();
+        try (Socket socket = new Socket(InetAddress.getByName(address), port);
+             DataInputStream input = new DataInputStream(socket.getInputStream());
+             DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
 
-            System.out.println("Sent: " + responseServer);
+            final String responseServer = type.equalsIgnoreCase("exit") ?
+                    type : String.join(" ", type, String.valueOf(index), String.join(" ", message)).trim();
+
+            System.out.println("Sent: " + type);
             output.writeUTF(responseServer);
 
-            final DataInputStream input = new DataInputStream(socket.getInputStream());
             System.out.println("Received: " + input.readUTF());
 
         } catch (IOException e) {
